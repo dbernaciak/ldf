@@ -1,6 +1,6 @@
 # Loss Discounting Framework
 ## Source code for paper "A loss discounting framework for model averaging and selection in time series models"
-The repository contains the python code for the ldf method as well as the reproducibe notebooks for the simulation and empirical studies presented in the paper.
+The repository contains the python and R code for the ldf method as well as the reproducibe notebooks for the simulation and empirical studies presented in the paper.
 
 ## Binder
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/dbernaciak/ldf/main?urlpath=lab)
