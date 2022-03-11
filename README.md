@@ -8,7 +8,7 @@ The repository contains the python and R code for the ldf method as well as the 
 ## NBViewer
 [![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/dbernaciak/ldf/tree/main/notebooks/)
 
-### Code for Bechmann et al.
+### Code for Beckmann et al.
 https://sites.google.com/site/dimitriskorobilis/matlab/dynamic-bayesian-learning
 ### Code for McAlinn and West (2019) & McAlinn et al. (2020) 
 https://www2.stat.duke.edu/~mw/mwsoftware/BPS/index.html
