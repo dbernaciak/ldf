@@ -50,7 +50,7 @@ def _second_layer(loglikehood: np.ndarray, deltas: np.ndarray, is_argmax, c):
                 momentum[t] = np.log((np.exp(loglikehood[:, t]) * p).sum())
             else:
                 m = max(cumsum[t-1])
-                p = np.exp(cumsum[t-1] - np.log(sum(np.exp(cumsum[t-1] - m))) - m)
+                p = np.exp(cumsum[t-1] - np.log(np.sum(np.exp(cumsum[t-1] - m))) - m)
                 weights[t] = p
                 momentum[t] = np.log((np.exp(loglikehood[:, t]) * p).sum())
             cumsum[t] = delta * cumsum[t-1] + loglikehood[:, t]
@@ -78,21 +78,22 @@ def ldf(agent_loglikelihoods: np.ndarray, levels, discount_factors: List, activa
 
     is_argmax = activation_functions[0] == "argmax"
     loglikehood ,prob = _first_layer(agent_loglikelihoods, alphas, is_argmax, c)
+    prob = prob.transpose(1, 0, 2)
 
-    if levels == 2:
-        deltas = discount_factors[1]
-        if not (isinstance(deltas, list) or isinstance(deltas, np.ndarray)):
-            deltas = np.array([deltas])
-
-        is_argmax = activation_functions[1] == "argmax"
-        momentum, param_weights = _second_layer(loglikehood, deltas, is_argmax, c)
-        weights = []
-
-        for k in range(len(deltas)):
-            weights.append(np.asarray([(prob[i, :, :].T * j).T.sum(axis=0) for i, j in enumerate(param_weights[k])]))
-        weights = np.asarray(weights)
-
-        return {"logscores": momentum, "weights": weights, "params_weights": param_weights}
-
-    else:
+    if levels == 1:
         return {"logscores": loglikehood, "weights": prob, "params_weights": None}
+    else:
+        for k in range(levels-1):
+            deltas = discount_factors[k+1]
+            if not (isinstance(deltas, list) or isinstance(deltas, np.ndarray)):
+                deltas = np.array([deltas])
+
+            is_argmax = activation_functions[k+1] == "argmax"
+            loglikehood, param_weights = _second_layer(loglikehood, deltas, is_argmax, c)
+            weights = []
+
+            for k in range(len(deltas)):  # iteration over discount factors
+                weights.append(
+                    np.asarray([(prob[:, i, :].T * j).T.sum(axis=0) for i, j in enumerate(param_weights[k])])) # iteration over T
+            prob = np.asarray(weights)
+        return {"logscores": loglikehood, "weights": prob, "params_weights": param_weights}
