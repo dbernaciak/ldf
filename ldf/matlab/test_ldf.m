@@ -21,3 +21,7 @@ assert(max(abs(sum(x.') - [-22.13047414 -22.23379625])) < 10^-8)
 activation_functions = ["argmax", "argmax"];
 [x, ~, ~] = ldf(forecasts_lik, 2, discount_factors, activation_functions);
 assert(max(abs(sum(x.') - [-25.87418075 -24.27844848])) < 10^-8) 
+
+activation_functions = ["softmax", "softmax", "softmax"];
+[x, ~, ~] = ldf(forecasts_lik, 3, discount_factors, activation_functions);
+assert(max(abs(sum(x.') - [-22.180801356798145, -22.17890856487699])) < 10^-8) 

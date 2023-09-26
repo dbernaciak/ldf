@@ -88,20 +88,26 @@ ldf <- function(agent_loglikelihoods, levels, discount_factors, activation_funct
   res = first_layer(agent_loglikelihoods, alphas, is_argmax, c)
   loglikehood = res$loglikehood
   prob = res$prob
+  prob = aperm(prob, c(2,1,3))
   
-  if (levels == 2) {
-    deltas = discount_factors
-    is_argmax = activation_functions[2] == "argmax"
-    res = second_layer(loglikehood, deltas, is_argmax)
-    momentum = res$res_likelihoods
-    param_weights = res$res_weights
-    weights = array(0, dim=c(length(deltas), dim(forecasts_lik)[2], dim(forecasts_lik)[1]))
-    for (k in 1:length(deltas)) {
-      for (i in 1:dim(param_weights)[2]) {
-        weights[k, i, ] = apply(t(prob[i, , ]) * param_weights[k, i, ],1,sum)
+  if (levels > 1) {
+    for (j in 2:levels){
+      is_argmax = activation_functions[j] == "argmax"
+      res = second_layer(loglikehood, discount_factors, is_argmax)
+
+      loglikehood = res$res_likelihoods
+      param_weights = res$res_weights
+
+      weights = array(0, dim=c(length(discount_factors), dim(forecasts_lik)[2], dim(forecasts_lik)[1]))
+      for (k in 1:length(discount_factors)) {
+        for (i in 1:dim(param_weights)[2]) {
+          weights[k, i, ] = apply(t(prob[, i, ]) * param_weights[k, i, ],1,sum)
+        }
       }
+
+      prob = weights
     }
-    list("logscores"=momentum , "weights"=weights, "params_weights"=param_weights)
+    list("logscores"=loglikehood , "weights"=prob, "params_weights"=param_weights)
   }
   else{
     list("logscores"=loglikehood , "weights"=prob, "params_weights"=NULL)
@@ -131,4 +137,5 @@ res = ldf(forecasts_lik, 2, discount_factors, c("softmax", "softmax"))
 stopifnot(max(abs(apply(res$logscores,1,sum) - c(-22.13047414, -22.23379625))) < 10^(-8))
 res = ldf(forecasts_lik, 2, discount_factors, c("argmax", "argmax"))
 stopifnot(max(abs(apply(res$logscores,1,sum) - c(-25.87418075, - 24.27844848))) < 10^(-8))
-
+res = ldf(forecasts_lik, 3, discount_factors, c("softmax", "softmax", "softmax"))
+stopifnot(max(abs(apply(res$logscores,1,sum) - c(-22.180801356798145, -22.17890856487699))) < 10^(-8))
