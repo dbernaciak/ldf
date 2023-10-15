@@ -116,4 +116,8 @@ def ldf(
                     )
                 )  # iteration over T
             prob = np.asarray(weights)
-        return {"logscores": a, "weights": prob, "params_weights": param_weights}
+        return {
+            "logscores": loglikehood,
+            "weights": prob,
+            "params_weights": param_weights,
+        }
