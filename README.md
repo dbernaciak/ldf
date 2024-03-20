@@ -34,4 +34,4 @@ http://www.francescoravazzolo.com/pages/DeCo.html
   * FX_investment.ipynb ```cell 26``` and ```cell 58``` replicate *Figure 6*
   * FX_investment.ipynb ```cell 45``` replicates *Figure 8*
   * FX_investment.ipynb ```cell 65``` replicates *Figure 7*
-* * US_inflation.ipynb ```cell 27``` replicates *Figure 9* in subsection "US Inflation Forecasts"
+* US_inflation.ipynb ```cell 27``` replicates *Figure 9* in subsection "US Inflation Forecasts"
